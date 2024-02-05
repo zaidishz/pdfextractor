@@ -1,3 +1,5 @@
+import pandas as pd
+import chardet
 import sys
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
@@ -40,25 +42,39 @@ def extract_data(pdf_path):
         b'6Ort': 'Ort',
         b'6Datum': 'Datum'
     }
-
-    parser = PDFParser(open(pdf_path, 'rb'))
-    doc = PDFDocument(parser)
-    fields = resolve1(doc.catalog['AcroForm'])['Fields']
+    
+    data_dict = {} 
+    parser = PDFParser(open(pdf_path, 'rb')) # Open the PDF file in read-binary mode
+    doc = PDFDocument(parser) # Create a PDFDocument object that stores the document structure
+    fields = resolve1(doc.catalog['AcroForm'])['Fields'] # Get the form fields from the PDF
     for i in fields:
         field = resolve1(i)
         name, value = field.get('T'), field.get('V')
-        if name and name in field_mapping:
-            mapped_name = field_mapping[name]
-            if isinstance(value, str):
-                value = value.strip("b'/'")
-            else:
-                value = str(value).strip("b'/") 
+        if name in field_mapping:
+            mapped_name = field_mapping[name] 
 
-            print('{0} = {1}'.format(mapped_name, value))
+            
+            if isinstance(value, bytes):   # If the value is a byte sequence
+                result = chardet.detect(value) # Use chardet to automatically detect the encoding
+                encoding = result["encoding"]
+                value = value.decode(encoding, errors="replace").strip("'/") # Decode the byte sequence using the detected encoding
+                
+            elif isinstance(value, str):
+                value = value.strip("b'/") # Remove leading and trailing characters
+
+            data_dict[mapped_name] = value 
+
+    df = pd.DataFrame([data_dict]) 
+    df = df[[col for col in field_mapping.values() if col in df.columns]] # Reorder columns based on field_mapping, only including existing keys
+
+    output_excel_path = pdf_path.replace('.pdf', '_output.xlsx')
+    df.to_excel(output_excel_path, index=False)
+    print(f"Data extracted from the PDF has been saved to {output_excel_path}")
+    #print(df)
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print("Usage: python script.py <pdf_file_path>")
-    else:
-        pdf_path = sys.argv[1]
-        extract_data(pdf_path)
+        print("Usage: python pdf_data_extractor.py <path_to_pdf_file>")
+        sys.exit(1)
+    pdf_file_path = sys.argv[1]
+    extract_data(pdf_file_path)
