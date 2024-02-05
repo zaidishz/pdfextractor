@@ -1,2 +1,2 @@
 # pdfextractor
-A complete process to extract textual information from tables, images, and plain text from a PDF file. 
+A complete process to extract textual information from tables, images, plain text, and user filled forms from a PDF file.
