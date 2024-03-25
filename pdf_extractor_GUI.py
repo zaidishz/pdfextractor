@@ -43,7 +43,7 @@ def main():
         messagebox.showwarning("No Folder Selected", "You must select a folder. Exiting application.")
         return
 
-    field_name_mapping = {
+    field_name_mapping = field_name_mapping = {
     '1.1': 'Nachname',
     '1.2': 'Vorname',
     '1.3': 'Geburtsdatum',
@@ -54,18 +54,18 @@ def main():
     '1.6': 'Ort',
     '1.7': 'Telefon',
     '1.8': 'E-Mail',
-    '1.9.1': 'Staatsangehörigkeit(1)',
-    '1.9.2': 'Staatsangehörigkeit(2)',
-    '1.10Einschreibung': 'Einschreibung',
-    '1.11': 'Besteht eine Behinderung',
-    '2.1': 'Welche art der Behinderung',
-    '2.2': 'Wann erwarben Sie die Behinderung',
-    '2.3.HZB': 'Wo erwarben Sie die Behinderung',
-    '2.3BL': 'Wo erwarben Sie die Behinderung?',
-    '2.4': 'Bitte geben Sie an, ob Sie eine der folgenden Leistungen beziehen:',
-    '3.1': 'Wo erfolgte die Hochschulzugangsberechtigung?',
+    '1.9.1': 'Staatsangehörigkeit',
+    '1.9.2': 'Weitere Staatsangehörigkeit',
+    '1.10Einschreibung': 'Einschreibung als Promotionsstudierenden',
+    '1.11': 'Beschäftigungsverhältnis mit OVGU / Klinikum',
+    '2.1': 'Art der HZB',
+    '2.2': 'Datum HZB-Erwerb',
+    '2.3.HZB': 'Staat HZB-Erwerb',
+    '2.3BL': 'Landkreis HZB-Erwerb',
+    '2.4': 'Staat der Ersteinschreibung',
+    '3.1': 'Wo erfolgte die Hochschulzugangsberechtigung',
     '3.2': 'Bitte geben Sie das Kfz-Kennzeichen',
-    '3.3': 'Bezeichnung der Hochschuleinrichtung',
+    '3.3': 'Hochschule der Ersteinschreibung (falls Inland)',
     '3.4M': 'Monat',
     '3.4J': 'Jahr',
     '4.1': 'Zur Promotion berechtigende',
@@ -76,14 +76,14 @@ def main():
     '4.6': 'Wo erwarben Sie den Hochschulabschluss?',
     '4.7': 'Bitte geben Sie das Kfz-Kennzeichen des Erwerbsortes an?',
     '4.8': 'Bezeichnung der Hochschuleinrichtung',
-    '5.1': 'Fachgebiet',
+    '5.1': 'Fachgebiet der Promotion',
     'ArtProm': 'Art der Promotion',
     '5.3': 'Art der Dissertation',
-    '5.4': 'Teilnahme an einem strukturierten Promotionsprogramm',
-    '5.5.Block': 'Thema der Dissertation',
-    '5.6': 'Betreuer/in der Dissertation',
+    '5.4': 'Teilnahme an strukturiertem Promotionsprogramm',
+    '5.5.Block': 'Thema',
+    '5.6': 'Betreuer',
     '6Ort': 'Ort',
-    '6Datum': 'Datum'
+    '6Datum': 'Datum der Zulassung'
     }
 
     process_pdf_folder(pdf_folder_path, field_name_mapping)
