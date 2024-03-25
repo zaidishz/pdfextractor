@@ -1,8 +1,9 @@
-import fitz
+import tkinter as tk
+from tkinter import filedialog, messagebox
+import fitz  # Import PyMuPDF
 import pandas as pd
 import os
 import glob
-import sys
 
 def extract_form_fields(pdf_file_path, field_name_mapping):
     doc = fitz.open(pdf_file_path)
@@ -14,10 +15,10 @@ def extract_form_fields(pdf_file_path, field_name_mapping):
             field_name = widget.field_name
             field_value = widget.field_value
             if field_name and field_value and field_name in field_name_mapping:
-                data_dict[field_name_mapping[field_name]] = field_value
+                mapped_name = field_name_mapping.get(field_name, field_name)
+                data_dict[mapped_name] = field_value
     doc.close()
     return data_dict
-
 
 def process_pdf_folder(pdf_folder_path, field_name_mapping):
     pdf_file_paths = glob.glob(os.path.join(pdf_folder_path, '*.pdf'))
@@ -30,16 +31,18 @@ def process_pdf_folder(pdf_folder_path, field_name_mapping):
         df = pd.DataFrame(aggregated_data)
         output_excel_path = os.path.join(pdf_folder_path, 'aggregated_output.xlsx')
         df.to_excel(output_excel_path, index=False)
-        print(f"Data extracted from the PDFs has been saved to {output_excel_path}")
+        messagebox.showinfo("Success", f"Data extracted from the PDFs has been saved to {output_excel_path}")
     else:
-        print("No valid data found to include in the DataFrame.")
+        messagebox.showinfo("No Data", "No valid data found to include in the DataFrame.")
 
-if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print("Usage: python script_name.py <path_to_pdf_folder>")
-        sys.exit(1)
+def main():
+    root = tk.Tk()
+    root.withdraw()
+    pdf_folder_path = filedialog.askdirectory(title="Select Folder with PDF files")
+    if not pdf_folder_path:
+        messagebox.showwarning("No Folder Selected", "You must select a folder. Exiting application.")
+        return
 
-    pdf_folder_path = sys.argv[1]
     field_name_mapping = {
     '1.1': 'Nachname',
     '1.2': 'Vorname',
@@ -84,3 +87,6 @@ if __name__ == "__main__":
     }
 
     process_pdf_folder(pdf_folder_path, field_name_mapping)
+
+if __name__ == "__main__":
+    main()
